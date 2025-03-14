@@ -1,0 +1,372 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Форма регистрации</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      display: grid;
+      grid-gap: 15px;
+    }
+
+    label {
+      font-weight: 500;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label .required::after {
+      content: " *";
+      color: red;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    .custom-select {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 5px;
+      font-size: 16px;
+      color: #555;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    .custom-select:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .gender-options {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .gender-options label {
+      flex-direction: row;
+      align-items: center;
+      margin-right: 15px;
+    }
+
+    .gender-options input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* Semi-transparent background */
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .popup button {
+      background-color: #28a745;
+      margin-top: 20px;
+    }
+
+    .popup button:hover {
+      background-color: #218838;
+    }
+
+    .error {
+      color: #dc3545;
+      font-size: 0.9em;
+      margin-top: 3px;
+    }
+
+    /* Styles for the custom multi-select dropdown */
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .select-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: none;
+      /* Hidden by default */
+      z-index: 10;
+    }
+
+    .select-options.show {
+      display: block;
+      /* Show options when the select is active */
+    }
+
+    .select-options label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .select-options label:hover {
+      background-color: #f4f4f4;
+    }
+
+    .select-options input[type="checkbox"] {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="registrationForm">
+    <label for="firstName" class="required">Имя:</label>
+    <input type="text" id="firstName" name="firstName" required>
+    <div class="error" id="firstNameError"></div>
+
+    <label for="lastName" class="required">Фамилия:</label>
+    <input type="text" id="lastName" name="lastName" required>
+    <div class="error" id="lastNameError"></div>
+
+    <label for="birthDate" class="required">Дата рождения:</label>
+    <input type="date" id="birthDate" name="birthDate" required>
+    <div class="error" id="birthDateError"></div>
+
+    <div>
+      <label class="required">Пол:</label>
+      <div class="gender-options">
+        <label for="male">
+          <input type="checkbox" id="male" name="gender" value="male">Мужской
+        </label>
+        <label for="female">
+          <input type="checkbox" id="female" name="gender" value="female">Женский
+        </label>
+      </div>
+      <div class="error" id="genderError"></div>
+    </div>
+
+    <label for="hobbies" class="required">Хобби:</label>
+    <div class="custom-select">
+      <div class="select-trigger">
+        <span>Выберите хобби</span>
+      </div>
+      <div class="select-options" id="hobbyOptions">
+        <label><input type="checkbox" name="hobby" value="reading">Чтение</label>
+        <label><input type="checkbox" name="hobby" value="sports">Спорт</label>
+        <label><input type="checkbox" name="hobby" value="music">Музыка</label>
+        <label><input type="checkbox" name="hobby" value="traveling">Путешествия</label>
+      </div>
+    </div>
+    <div class="error" id="hobbiesError"></div>
+
+    <label for="notes">Примечание:</label>
+    <textarea id="notes" name="notes" rows="4"></textarea>
+
+    <button type="submit">Отправить</button>
+  </form>
+
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup" id="popup">
+      <p>Ваша анкета отправлена!</p>
+      <button id="closePopup">Закрыть</button>
+    </div>
+  </div>
+
+  <script type="importmap">
+{
+  "imports": {
+    "telegram-bot-api": "https://cdn.jsdelivr.net/npm/node-telegram-bot-api@0.64.0/+esm"
+  }
+}
+</script>
+
+  <script type="module">
+    const form = document.getElementById('registrationForm');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popup = document.getElementById('popup');
+    const closePopup = document.getElementById('closePopup');
+    const selectTrigger = document.querySelector('.select-trigger');
+    const selectOptions = document.getElementById('hobbyOptions');
+
+    // Toggle the custom select options
+    selectTrigger.addEventListener('click', () => {
+      selectOptions.classList.toggle('show');
+    });
+
+    // Close the custom select if clicked outside
+    document.addEventListener('click', (event) => {
+      if (!form.contains(event.target) && selectOptions.classList.contains('show')) {
+        selectOptions.classList.remove('show');
+      }
+    });
+
+    closePopup.addEventListener('click', () => {
+      popupOverlay.style.display = 'none';
+    });
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      let isValid = true;
+
+      // Reset errors
+      document.querySelectorAll('.error').forEach(error => error.textContent = '');
+
+      // Validate first name
+      const firstName = document.getElementById('firstName').value.trim();
+      if (!firstName) {
+        document.getElementById('firstNameError').textContent = 'Поле "Имя" обязательно для заполнения.';
+        isValid = false;
+      }
+
+      // Validate last name
+      const lastName = document.getElementById('lastName').value.trim();
+      if (!lastName) {
+        document.getElementById('lastNameError').textContent = 'Поле "Фамилия" обязательно для заполнения.';
+        isValid = false;
+      }
+
+      // Validate birth date
+      const birthDate = document.getElementById('birthDate').value;
+      if (!birthDate) {
+        document.getElementById('birthDateError').textContent = 'Поле "Дата рождения" обязательно для заполнения.';
+        isValid = false;
+      }
+
+      // Validate gender
+      const male = document.getElementById('male');
+      const female = document.getElementById('female');
+      if (!male.checked && !female.checked) {
+        document.getElementById('genderError').textContent = 'Необходимо выбрать пол.';
+        isValid = false;
+      }
+
+      // Validate hobbies
+      const hobbies = document.querySelectorAll('input[name="hobby"]:checked');
+      if (hobbies.length === 0) {
+        document.getElementById('hobbiesError').textContent = 'Необходимо выбрать хотя бы одно хобби.';
+        isValid = false;
+      }
+
+      if (!isValid) {
+        return; // Prevent further execution if form is invalid
+      }
+
+      // Collect form data
+      const gender = male.checked ? 'Мужской' : 'Женский';
+      const selectedHobbies = Array.from(hobbies).map(hobby => hobby.value).join(', ');
+      const notes = document.getElementById('notes').value.trim();
+
+      // Construct the message
+      let message = `📩 Вам новая заявка:\n\n`;
+      message += `<b>Имя:</b> ${firstName}\n`;
+      message += `<b>Фамилия:</b> ${lastName}\n`;
+      message += `<b>Дата рождения:</b> ${birthDate}\n`;
+      message += `<b>Пол:</b> ${gender}\n`;
+      message += `<b>Выбранные хобби:</b> ${selectedHobbies}\n`;
+      if (notes) {
+        message += `<b>Примечание:</b> ${notes}\n`;
+      }
+
+      // Send the message to Telegram
+      try {
+        const botToken = '7739135343:AAHSM6ZK5UHtA4MgdIbjUoxwXqrMEfEQb2s';
+        const chatId = '5607789582';
+
+        const params = {
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        };
+
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(params)
+        });
+
+        if (response.ok) {
+          console.log('Message sent successfully!');
+          popupOverlay.style.display = 'flex'; // Show popup overlay
+        } else {
+          console.error('Failed to send message:', response.status);
+          alert('Failed to send message. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('An error occurred while sending the message. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>
